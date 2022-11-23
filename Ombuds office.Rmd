@@ -1,0 +1,159 @@
+---
+title: "Ombuds"
+author: "Xinqian Dai"
+date: '2022-10-11'
+output: pdf_document
+---
+
+```{r}
+setwd("/Users/demix9/Desktop")
+visitor <-read.csv(file="FY22VisitorDataUndergrads.csv")
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+model1 <- lm(Visits~First_Visit, data = visitor)
+summary(model1)$coef
+```
+estimate for first_visit: 2.02
+estimate for not first_visit: 2
+
+significantly different.
+
+```{r}
+model2 <- lm(Visits~Gender, data = visitor)
+summary(model2)$coef
+```
+estimate visits for female visitors: 2
+estimate visits for male visitors: 2
+estimate visits for other gender visitors: 3
+
+significantly different
+
+```{r}
+model3 <- lm(Visits~Race, data = visitor)
+summary(model3)$coef
+```
+```{r}
+model4 <- lm(Visits~Mode, data = visitor)
+summary(model4)$coef
+```
+
+```{r}
+model5 <- lm(Visits~International, data = visitor)
+summary(model5)$coef
+```
+
+```{r}
+fit.1 <- lm(Visits~First_Visit, data = visitor)
+anova(fit.1)
+fit.2 <- lm(Visits~Gender, data = visitor)
+anova(fit.2)
+fit.3 <- lm(Visits~Race, data = visitor)
+anova(fit.3)
+fit.4 <- lm(Visits~Mode, data = visitor)
+anova(fit.4)
+fit.5 <- lm(Visits~International, data = visitor)
+anova(fit.5)
+```
+The model with gender has the largest SSR and the smallest SSE, so gender matters the most for predicting the visits.
+
+
+```{r}
+fit.add<-lm(Visits~.,data=visitor)
+summary(fit.add)
+confint(fit.add)
+```
+
+Week 2 (10/17)
+```{r}
+#plot(visitor$Intake_Month,visitor$Visits,xlab="Counts",ylab="METs", group_by(Undergrad_Subgroup))
+#ggplot(data = visitor) + geom_bar(mapping = aes(x = Intake_Month, y = Visits ))
+
+#ggplot(data = visitor, mapping=aes(x =Intake_Month2), fill=as.factor(Undergrad_Subgroup)) + geom_bar()+ ggtitle("Intake Month")+group_by(visitor$Undergrad_Subgroup)
+
+ggplot(visitor,aes(x = factor(Intake_Month2,level = c("JUL","AUG","SEP","OCT","NOV","DEC","JAN","FEB","MAR","APR","MAY","JUN")), fill = Undergrad_Subgroup)) + geom_bar()+labs(y= "# of Visitors", x = "Intake Month") 
+
+visitor %>% 
+   group_by(Undergrad_Subgroup) %>%
+   summarise(frequency = sum(Intake_Date != 0))
+
+```
+```{r}
+ggplot(visitor,aes(x = Level_Service, fill = Undergrad_Subgroup)) + geom_bar()+labs(y= "Counts", x = "Level of Service") 
+visitor %>% 
+   group_by(Level_Service) %>%
+   summarise(frequency = sum(Intake_Date != 0))
+
+
+```
+11.07
+
+```{r}
+setwd("/Users/demix9/Desktop")
+allvisitor <-read.csv(file="FY22RoleDateAllVisitors.csv")
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+#ggplot(allvisitor,aes(x = Intake_Date), fill = University_Role) + geom_bar()+labs(y= "# of Visitors", x = "Intake Date")
+Julyvisitor <- allvisitor %>% filter(Intake_Month=="Jul-21")
+ggplot(Julyvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Jul 21") 
+
+Augvisitor <- allvisitor %>% filter(Intake_Month=="Aug-21")%>% filter(WeekInMonth> 0)
+ggplot(Augvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Aug 21") 
+
+Sepvisitor <- allvisitor %>% filter(Intake_Month=="Sep-21")
+ggplot(Sepvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Sep 21")
+
+Octvisitor <- allvisitor %>% filter(Intake_Month=="Oct-21")
+ggplot(Octvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Oct 21")
+
+Novvisitor <- allvisitor %>% filter(Intake_Month=="Nov-21")
+ggplot(Novvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Nov 21")
+
+Decvisitor <- allvisitor %>% filter(Intake_Month=="Dec-21") %>% filter(WeekInMonth> 0)
+ggplot(Decvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Dec 21")
+
+Janvisitor <- allvisitor %>% filter(Intake_Month=="Jan-22")
+ggplot(Janvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Jan 22")
+
+Febvisitor <- allvisitor %>% filter(Intake_Month=="Feb-22")
+ggplot(Febvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Feb 22")
+
+Marvisitor <- allvisitor %>% filter(Intake_Month=="Mar-22")%>% filter(WeekInMonth> 0)
+ggplot(Marvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Mar 22")
+
+Aprvisitor <- allvisitor %>% filter(Intake_Month=="Apr-22")
+ggplot(Aprvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Apr 22")
+
+Mayvisitor <- allvisitor %>% filter(Intake_Month=="May-22")
+ggplot(Mayvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-May 22")
+
+Junvisitor <- allvisitor %>% filter(Intake_Month=="Jun-22")
+ggplot(Junvisitor,aes(x = WeekInMonth, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Week number of the month-Jun 22")
+```
+```{r}
+#visitor_1 <- allvisitor %>% filter(WeekNum=="Jun-22")
+allvisitor <- allvisitor %>% filter(WeekNum>=0)
+ggplot(allvisitor,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks 2021-2022")
+
+visitor_1 <- allvisitor %>% filter(WeekNum<=27)
+ggplot(visitor_1,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks 2021")
+visitor_2 <- allvisitor %>% filter(WeekNum>27)
+ggplot(visitor_2,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks 2022")
+
+
+visitor_3 <- allvisitor %>% filter(WeekNum<=13)
+ggplot(visitor_3,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks from 1-13")
+visitor_4 <- allvisitor %>% filter(WeekNum<=26 & WeekNum>13 )
+ggplot(visitor_4,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks from 14-26")
+visitor_5 <- allvisitor %>% filter(WeekNum<=39 & WeekNum>26 )
+ggplot(visitor_5,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks from 27-39")
+visitor_6 <- allvisitor %>% filter(WeekNum<=53 & WeekNum>39)
+ggplot(visitor_6,aes(x = WeekNum, fill = University_Role)) + geom_bar()+labs(y= "Counts", x = "Weeks from 40-53")
+```
